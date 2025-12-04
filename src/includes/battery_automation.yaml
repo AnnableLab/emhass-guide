@@ -19,7 +19,6 @@ actions:
       p_grid: "{{ states('sensor.mpc_grid_power') | int(0) }}"
       max_charge_rate: "{{ states('sensor.sigen_plant_ess_rated_charging_power') | float(0) }}"
       max_discharge_rate: "{{ states('sensor.sigen_plant_ess_rated_discharging_power') | float(0) }}"
-      max_import_rate_kw: 100
   - choose:
       - conditions:
           - condition: template
@@ -81,13 +80,6 @@ actions:
             target:
               entity_id:
                 - number.sigen_plant_ess_max_charging_limit
-          - action: number.set_value
-            metadata: {}
-            data:
-              value: "{{ max_import_rate_kw if p_grid > 0 else 0 }}"
-            target:
-              entity_id:
-                - number.sigen_plant_pcs_import_limitation
         alias: Check charge conditions
       - conditions:
           - condition: template
@@ -99,12 +91,5 @@ actions:
               option: Standby
             target:
               entity_id: select.sigen_plant_remote_ems_control_mode
-          - action: number.set_value
-            metadata: {}
-            data:
-              value: 0
-            target:
-              entity_id:
-                - number.sigen_plant_pcs_import_limitation
         alias: Check standby conditions
 mode: single
