@@ -58,6 +58,7 @@ sequence:
         inverter_is_hybrid: true
         number_of_deferrable_loads: 0
         set_nodischarge_to_grid: false
+        lp_solver: HiGHS
       payload:
         weight_battery_charge: "{{ weight_battery_charge }}"
         weight_battery_discharge: "{{ weight_battery_discharge }}"
