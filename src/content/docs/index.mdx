@@ -1,25 +1,57 @@
 ---
 title: Home
 description:
-  A beginner's guide for setting up EMHASS with Home Assistant to automate a Sigenergy battery system using Amber
+  A beginner's guide for setting up energy optimization with Home Assistant to automate a Sigenergy battery system using Amber
   Electric pricing.
 ---
 
-This site aims to be a beginner's guide for setting up **EMHASS** with Home Assistant. It specifically targets those
-with a Sigenergy system with Amber Electric pricing. In the end you will have home assistant automatically controlling
+This site provides beginner's guides for setting up energy optimization with Home Assistant. It specifically targets those
+with a Sigenergy system with Amber Electric pricing. In the end you will have Home Assistant automatically controlling
 your battery, optimizing when to charge and discharge to and from the grid based on pricing and weather forecasts. This
 is akin to Amber's SmartShift, but you have full control and able to run locally.
 
+## Choose Your Guide
+
+There are two approaches covered in this guide:
+
+### EMHASS
+
+[EMHASS (Energy Management for Home Assistant)](https://github.com/davidusb-geek/emhass) is a well-established Home Assistant addon that uses linear programming to optimize your energy usage.
+
+**Pros:**
+- Mature and well-documented
+- Runs as a standalone addon
+- Large community support
+
+**Cons:**
+- Requires more manual configuration
+- Uses REST commands for communication
+
+[**Start the EMHASS Guide →**](/emhass)
+
+---
+
+### HAEO
+
+[HAEO (Home Assistant Energy Optimizer)](https://haeo.io/) is a newer Home Assistant custom integration that also uses linear programming to optimize your home's energy usage.
+
+**Pros:**
+- Native Home Assistant integration
+- Configuration via the UI
+- Works with [HAFO](https://hafo.haeo.io/) for load forecasting
+
+**Cons:**
+- Newer project with smaller community
+- Still under active development
+
+[**Start the HAEO Guide →**](/haeo)
+
+---
+
 ## Disclaimer
 
-I do not claim to be an energy expert, and this guide is still a work in progress, but it does provide a complete
-working solution. I am just a software engineer sharing my learnings in the hopes of helping others as I found EMHASS
-quite thorny to begin with.
+I do not claim to be an energy expert, and these guides are still a work in progress, but they provide complete
+working solutions. I am just a software engineer sharing my learnings in the hopes of helping others.
 
 Feedback and contributions are welcome. Feel free to raise issues or pull requests over on
 [GitHub](https://github.com/AnnableLab/emhass-guide).
-
-## Getting started
-
-First, we will start with an overview of the general architecture of how everything fits together. Use the navigation
-menu to explore the guide.

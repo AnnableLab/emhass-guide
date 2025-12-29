@@ -1,0 +1,56 @@
+---
+title: Automation & Scheduling
+description: Automate battery control based on the HAEO energy plan and handle negative pricing.
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import CodeBlock from "../../../components/CodeBlock.astro";
+import { applyPatch } from "diff";
+import batteryAutomationYaml from "../../../includes/battery_automation.yaml?raw";
+import curtailmentYaml from "../../../includes/curtailment.yaml?raw";
+import curtailmentPatch from "../../../includes/curtailment.patch?raw";
+
+export const curtailmentYamlPatched = applyPatch(curtailmentYaml, curtailmentPatch) || curtailmentYaml;
+
+HAEO by itself just creates the energy plan, but it won't actually know how to execute upon it. In order to execute
+the plan, we will need an automation.
+
+Note: Make sure the Sigenergy integration is no longer in Read-Only Mode, as we will now be changing values
+automatically! You will also have to turn `switch.sigen_plant_remote_ems_controled_by_home_assistant` on (Important:
+This will disable Amber SmartShift, which as of this writing you cannot currently turn back on without contacting
+Amber).
+
+This automation switches the Sigenergy battery system between 4 operating modes depending on the energy plan:
+
+1. Maximum Self Consumption
+2. Command Discharging (PV First)
+3. Command Charging (PV First)
+4. Standby
+
+Using just these four modes and modulating various charge and discharge limits, we can achieve a great deal!
+
+You will also need to manually enable these disabled Sigenergy Plant sensors in order for the script to function:
+
+- `select.sigen_plant_remote_ems_control_mode`
+- `number.sigen_plant_ess_max_charging_limit`
+- `number.sigen_plant_ess_max_discharging_limit`
+- `number.sigen_plant_grid_export_limitation`
+- `number.sigen_plant_pv_max_power_limit`
+
+<CodeBlock lang="yaml" code={batteryAutomationYaml} />
+
+### Curtailment
+
+You will also want an automation to automatically handle negative prices. This automation will prevent selling PV at a
+negative feed-in price and will also prevent using solar when there is a negative general price (as you'll make more
+money drawing from the grid instead).
+
+<Tabs>
+  <TabItem label="Amber Integration">
+    <CodeBlock lang="yaml" code={curtailmentYaml} />
+  </TabItem>
+  <TabItem label="Amber2MQTT">
+    <CodeBlock lang="yaml" code={curtailmentYamlPatched} />
+  </TabItem>
+</Tabs>
+

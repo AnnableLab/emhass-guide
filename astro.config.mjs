@@ -11,9 +11,9 @@ export default defineConfig({
     sitemap(),
     robotsTxt(),
     starlight({
-      title: "Sigenergy with Home Assistant and EMHASS",
+      title: "Sigenergy with Home Assistant",
       description:
-        "Step-by-step guide automating a Sigenergy system with Home Assistant using EMHASS and Amber Electric in Australia.",
+        "Step-by-step guides for automating a Sigenergy system with Home Assistant using EMHASS or HAEO and Amber Electric in Australia.",
       tableOfContents: false,
       head: [
         {
@@ -49,22 +49,36 @@ export default defineConfig({
       ],
       customCss: ["./src/styles/custom.css"],
       sidebar: [
+        { label: "Home", link: "/" },
         {
           label: "EMHASS Guide",
           items: [
-            { label: "Home", link: "/" },
-            { label: "Architecture", link: "/architecture" },
-            { label: "Prerequisites", link: "/prerequisites" },
-            { label: "EMHASS Setup", link: "/setup" },
-            { label: "Running EMHASS", link: "/emhass" },
-            { label: "Dashboard", link: "/dashboard" },
-            { label: "Battery Automation", link: "/automation" },
-            { label: "Conclusion", link: "/conclusion" },
+            { label: "Introduction", link: "/emhass" },
+            { label: "Architecture", link: "/emhass/architecture" },
+            { label: "Prerequisites", link: "/emhass/prerequisites" },
+            { label: "EMHASS Setup", link: "/emhass/setup" },
+            { label: "Running EMHASS", link: "/emhass/emhass" },
+            { label: "Dashboard", link: "/emhass/dashboard" },
+            { label: "Battery Automation", link: "/emhass/automation" },
+            { label: "Conclusion", link: "/emhass/conclusion" },
+          ],
+        },
+        {
+          label: "HAEO Guide",
+          items: [
+            { label: "Introduction", link: "/haeo" },
+            { label: "Architecture", link: "/haeo/architecture" },
+            { label: "Prerequisites", link: "/haeo/prerequisites" },
+            { label: "HAEO Setup", link: "/haeo/setup" },
+            { label: "Running HAEO", link: "/haeo/haeo" },
+            { label: "Dashboard", link: "/haeo/dashboard" },
+            { label: "Battery Automation", link: "/haeo/automation" },
+            { label: "Conclusion", link: "/haeo/conclusion" },
           ],
         },
         {
           label: "Debugging",
-          items: [{ label: "Trace Downloading", link: "/trace" }],
+          items: [{ label: "Trace Downloading", link: "/emhass/trace" }],
         },
       ],
     }),
@@ -85,12 +99,21 @@ export default defineConfig({
     ],
   },
   redirects: {
-    "/pages/architecture": "/architecture",
-    "/pages/automation": "/automation",
-    "/pages/conclusion": "/conclusion",
-    "/pages/dashboard": "/dashboard",
-    "/pages/emhass": "/emhass",
-    "/pages/prerequisites": "/prerequisites",
-    "/pages/setup": "/setup",
+    // Legacy /pages/ redirects
+    "/pages/architecture": "/emhass/architecture",
+    "/pages/automation": "/emhass/automation",
+    "/pages/conclusion": "/emhass/conclusion",
+    "/pages/dashboard": "/emhass/dashboard",
+    "/pages/emhass": "/emhass/emhass",
+    "/pages/prerequisites": "/emhass/prerequisites",
+    "/pages/setup": "/emhass/setup",
+    // Old root-level redirects to new EMHASS paths
+    "/architecture": "/emhass/architecture",
+    "/automation": "/emhass/automation",
+    "/conclusion": "/emhass/conclusion",
+    "/dashboard": "/emhass/dashboard",
+    "/prerequisites": "/emhass/prerequisites",
+    "/setup": "/emhass/setup",
+    "/trace": "/emhass/trace",
   },
 });

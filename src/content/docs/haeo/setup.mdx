@@ -1,0 +1,40 @@
+---
+title: HAEO Setup
+description: Configure HAEO and set up REST commands to communicate with Home Assistant.
+---
+
+import CodeBlock from "../../../components/CodeBlock.astro";
+import packagesConfigYaml from "../../../includes/packages_config.yaml?raw";
+import emhassYaml from "../../../includes/emhass.yaml?raw";
+
+### Configuration
+
+Unfortunately, HAEO has a long and confusing configuration page, many of which are not actually required.
+
+Thankfully, we can completely ignore the HAEO configuration page, so just leave it as default. We will be overriding
+the values we care about later when running HAEO. If you have already configured things and are having any trouble,
+try resetting them to the defaults.
+
+### Running HAEO from Home Assistant
+
+Since HAEO is an addon, we need a communication system to run commands. One simple way is to use rest commands which
+we will setup below.
+
+You'll need access to your home assistant configuration files, I recommend the official
+[vscode addon](https://github.com/hassio-addons/addon-vscode).
+
+If you have not setup packages yet, create a `packages` directory alongside `configuration.yaml`, and then add this to
+your home assistant `configuration.yaml` file:
+
+<CodeBlock lang="yaml" code={packagesConfigYaml} />
+
+Inside the `packages` directory, create a file named `emhass.yaml` with the following content:
+
+<CodeBlock lang="yaml" code={emhassYaml} />
+
+Then restart home assistant.
+
+These are the 3 HAEO actions we will now be able to execute from home assistant. In this guide we will only use the
+last two. They all take a payload as a parameter, which will later include all the required information such as the
+forecasts and solar/battery specs.
+

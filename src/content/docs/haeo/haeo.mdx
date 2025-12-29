@@ -1,21 +1,21 @@
 ---
-title: Running EMHASS
-description: Create scripts and automations to run EMHASS and generate your energy optimization plan.
+title: Running HAEO
+description: Create scripts and automations to run HAEO and generate your energy optimization plan.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
-import CodeBlock from "../../components/CodeBlock.astro";
+import CodeBlock from "../../../components/CodeBlock.astro";
 import { applyPatch } from "diff";
-import emhassAmberScriptYaml from "../../includes/emhass_script.yaml?raw";
-import emhassA2MScriptPatchYaml from "../../includes/emhass_script.patch?raw";
-import emhassAmberAutomationYaml from "../../includes/emhass_automation.yaml?raw";
-import emhassA2MAutomationPatchYaml from "../../includes/emhass_automation.patch?raw";
+import emhassAmberScriptYaml from "../../../includes/emhass_script.yaml?raw";
+import emhassA2MScriptPatchYaml from "../../../includes/emhass_script.patch?raw";
+import emhassAmberAutomationYaml from "../../../includes/emhass_automation.yaml?raw";
+import emhassA2MAutomationPatchYaml from "../../../includes/emhass_automation.patch?raw";
 
 export const emhassA2MScriptYaml = applyPatch(emhassAmberScriptYaml, emhassA2MScriptPatchYaml) || emhassAutomationYaml;
 export const emhassA2MAutomationYaml =
   applyPatch(emhassAmberAutomationYaml, emhassA2MAutomationPatchYaml) || emhassA2MScriptPatchYaml;
 
-To run EMHASS, we want to execute the rest commands we setup earlier with all the parameters they need. In this guide we
+To run HAEO, we want to execute the rest commands we setup earlier with all the parameters they need. In this guide we
 will use scripts.
 
 You will also need to manually enable these disabled Sigenergy Plant sensors in order for the script to function:
@@ -39,8 +39,8 @@ The critical variables to configure are at the very top.
 
 1. `costfun` — this can be either `profit`, `cost` or `self-consumption`, which either maximize profit, minimize cost or
    maximize self-consumption (selling any excess).
-   - UPDATE: There is currently an [open issue](https://github.com/davidusb-geek/emhass/issues/559) within EMHASS
-     preventing this parameter from working correctly. For now, you will need to set it via the EMHASS Config editor.
+   - UPDATE: There is currently an [open issue](https://github.com/davidusb-geek/emhass/issues/559) within HAEO
+     preventing this parameter from working correctly. For now, you will need to set it via the HAEO Config editor.
 2. `maximum_power_from_grid` — this is the maximum power you can draw from the grid (e.g. when charging your batteries
    from the grid).
 3. `maximum_power_to_grid` — this is the maximum power you can feed into the grid (e.g. when exporting solar, or
@@ -57,8 +57,8 @@ The critical variables to configure are at the very top.
   </TabItem>
 </Tabs>
 
-If you run this script, EMHASS will produce a plan for the day. You should be able to manually run the script and check
-the output in the EMHASS webview. We will also be adding our own output dashboard shortly.
+If you run this script, HAEO will produce a plan for the day. You should be able to manually run the script and check
+the output in the HAEO webview. We will also be adding our own output dashboard shortly.
 
 You'll want to be running this script regularly as forecasts change throughout the day, so the next step is to setup a
 new automation:
@@ -76,3 +76,4 @@ This will run every time the prices change.
 
 Note: On my Intel NUC Home Assistant server, this script takes a couple of seconds to run. If you are running lower-end
 hardware, you may want to either increase the optimization time step or reduce the running frequency.
+
