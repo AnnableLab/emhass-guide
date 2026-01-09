@@ -18,8 +18,6 @@
 @@ -89 +89 @@ sequence:
 -                {% set price = forecast.per_kwh | float(0) %}
 +                {% set price = forecast.advanced_price_predicted | float(0) %}
-@@ -91,0 +92 @@ sequence:
-+
 @@ -98 +99 @@ sequence:
 -                state_attr(sensors.amber.feed_in_forecast, 'forecasts') | list
 +                state_attr(sensors.amber.feed_in_forecast, 'Forecasts') | list
