@@ -84,9 +84,11 @@ sequence:
           ) %}
           {% for day in range(num_prediction_days) %}
             {% for forecast in ns.input %}
-              {% set start = forecast.start_time | as_datetime | as_local + timedelta(days=day) %}
-              {% set price = forecast.per_kwh | float(0) %}
-              {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
+              {% if forecast.start_time | as_datetime > now() %}
+                {% set start = forecast.start_time | as_datetime | as_local + timedelta(days=day) %}
+                {% set price = forecast.per_kwh | float(0) %}
+                {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
+              {% endif %}
             {% endfor %}
           {% endfor %}
           {{ ns.output }}
@@ -101,9 +103,11 @@ sequence:
           ) %}
           {% for day in range(num_prediction_days) %}
             {% for forecast in ns.input %}
-              {% set start = forecast.start_time | as_datetime | as_local + timedelta(days=day) %}
-              {% set price = forecast.per_kwh | float(0) %}
-              {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
+              {% if forecast.start_time | as_datetime > now() %}
+                {% set start = forecast.start_time | as_datetime | as_local + timedelta(days=day) %}
+                {% set price = forecast.per_kwh | float(0) %}
+                {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
+              {% endif %}
             {% endfor %}
           {% endfor %}
           {{ ns.output }}
