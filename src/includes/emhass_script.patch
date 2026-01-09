@@ -9,23 +9,21 @@
 +          general_forecast: sensor.amber_5min_forecasts_extended_general_price
 +          feed_in_price: sensor.amber_5min_current_feed_in_price
 +          feed_in_forecast: sensor.amber_5min_forecasts_extended_feed_in_price
-@@ -78 +78 @@ sequence:
+@@ -79 +79 @@ sequence:
 -                state_attr(sensors.amber.general_forecast, 'forecasts') | list
 +                state_attr(sensors.amber.general_forecast, 'Forecasts') | list
 @@ -80 +80 @@ sequence:
 -            ) | selectattr('per_kwh', 'is_number') | list,
 +            ) | selectattr('advanced_price_predicted', 'is_number') | list,
-@@ -88 +88 @@ sequence:
--              {% set price = forecast.per_kwh | float(0) %}
-+              {% set price = forecast.advanced_price_predicted | float(0) %}
-@@ -89,0 +90 @@ sequence:
-+
-@@ -95 +96 @@ sequence:
+@@ -89 +89 @@ sequence:
+-                {% set price = forecast.per_kwh | float(0) %}
++                {% set price = forecast.advanced_price_predicted | float(0) %}
+@@ -98 +99 @@ sequence:
 -                state_attr(sensors.amber.feed_in_forecast, 'forecasts') | list
 +                state_attr(sensors.amber.feed_in_forecast, 'Forecasts') | list
-@@ -97 +98 @@ sequence:
+@@ -99 +100 @@ sequence:
 -            ) | selectattr('per_kwh', 'is_number') | list,
 +            ) | selectattr('advanced_price_predicted', 'is_number') | list,
-@@ -105 +106 @@ sequence:
--              {% set price = forecast.per_kwh | float(0) %}
-+              {% set price = -forecast.advanced_price_predicted | float(0) %}
+@@ -108 +109 @@ sequence:
+-                {% set price = forecast.per_kwh | float(0) %}
++                {% set price = -forecast.advanced_price_predicted | float(0) %}
