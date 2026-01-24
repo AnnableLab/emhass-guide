@@ -1,0 +1,35 @@
+[project]
+name = "emhass-guide"
+version = "0.1.0"
+description = "Home Assistant YAML testing for EMHASS guide"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--asyncio-mode=auto",
+]
+
+[dependency-groups]
+dev = [
+    "homeassistant>=2025.2.0",
+    "jinja2>=3.1.2",
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=4.1.0",
+    "pyyaml>=6.0",
+    "voluptuous>=0.13.1",
+]
+
+# Note: Coverage is not applicable for YAML file testing
+# If testing Python code in the future, uncomment below:
+# [tool.coverage.run]
+# source = ["src"]
+# omit = ["tests/*", ".venv/*", "venv/*", "src/includes/*"]
