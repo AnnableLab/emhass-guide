@@ -51,19 +51,6 @@ export default defineConfig({
       sidebar: [
         { label: "Home", link: "/" },
         {
-          label: "EMHASS Guide",
-          items: [
-            { label: "Introduction", link: "/emhass" },
-            { label: "Architecture", link: "/emhass/architecture" },
-            { label: "Prerequisites", link: "/emhass/prerequisites" },
-            { label: "EMHASS Setup", link: "/emhass/setup" },
-            { label: "Running EMHASS", link: "/emhass/emhass" },
-            { label: "Dashboard", link: "/emhass/dashboard" },
-            { label: "Battery Automation", link: "/emhass/automation" },
-            { label: "Conclusion", link: "/emhass/conclusion" },
-          ],
-        },
-        {
           label: "HAEO Guide",
           items: [
             { label: "Introduction", link: "/haeo" },
@@ -74,11 +61,27 @@ export default defineConfig({
             { label: "Dashboard", link: "/haeo/dashboard" },
             { label: "Battery Automation", link: "/haeo/automation" },
             { label: "Conclusion", link: "/haeo/conclusion" },
+            {
+              label: "Debugging",
+              items: [{ label: "Download Diagnostic", link: "/haeo/diagnostic" }],
+            },
           ],
         },
         {
-          label: "Debugging",
-          items: [{ label: "Trace Downloading", link: "/emhass/trace" }],
+          label: "EMHASS Guide",
+          items: [
+            { label: "Introduction", link: "/emhass" },
+            { label: "Architecture", link: "/emhass/architecture" },
+            { label: "Prerequisites", link: "/emhass/prerequisites" },
+            { label: "EMHASS Setup", link: "/emhass/setup" },
+            { label: "Running EMHASS", link: "/emhass/emhass" },
+            { label: "Dashboard", link: "/emhass/dashboard" },
+            { label: "Battery Automation", link: "/emhass/automation" },
+            { label: "Conclusion", link: "/emhass/conclusion" },
+            { label: "Debugging",
+              items: [{ label: "Trace Downloading", link: "/emhass/trace" }],
+            },
+          ],
         },
       ],
     }),
