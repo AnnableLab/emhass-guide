@@ -1,35 +1,37 @@
 ---
-title: Home
-description:
-  A beginner's guide for setting up HAEO with Home Assistant to automate a Sigenergy battery system using Amber
-  Electric pricing.
+title: Introduction
+description: Getting started with the HAEO guide for Sigenergy battery automation.
 ---
 
-This site aims to be a beginner's guide for setting up **HAEO** with Home Assistant. It specifically targets those 
-with a Sigenergy system with Amber Electric pricing. In the end you will have home assistant automatically controlling 
-your battery, optimizing when to charge and discharge to and from the grid based on pricing and weather forecasts. This 
-is akin to Amber's SmartShift, but you have full control and able to run locally.
+Welcome to the HAEO guide. This guide will walk you through setting up [HAEO](https://haeo.io/) (Home Assistant Energy 
+Optimizer) to automate your Sigenergy battery system.
+
+## What You'll Set Up
+
+By following this guide, you'll configure:
+
+1. **HAEO** — The optimizer that creates your energy plan
+2. **Input forecasts** — Price data from Amber, solar from Solcast, load from HAFO
+3. **Dashboard** — Visualize your energy plan with ApexCharts
+4. **Battery automation** — Automatically control your Sigenergy system based on the plan
 
 ## Why HAEO?
 
-HAEO (Home Assistant Energy Optimizer) is a native Home Assistant integration that makes energy optimization 
-straightforward:
+HAEO is a native Home Assistant integration designed for simplicity:
 
-- **UI-based configuration** — No YAML files or REST commands needed
-- **Automatic optimization** — Re-optimizes whenever forecasts change
+- **UI-based configuration** — No YAML files or REST commands
+- **Automatic optimization** — Re-runs whenever your forecasts update
 - **Native sensors** — Results appear as standard Home Assistant entities
-- **Local control** — Everything runs on your Home Assistant instance
+- **Event-driven** — No need to schedule optimization runs
 
-## Disclaimer
+## Guide Structure
 
-I do not claim to be an energy expert, and this guide is still a work in progress, but it does provide a complete 
-working solution. I am just a software engineer sharing my learnings in the hopes of helping others.
+1. **Architecture** — Understand how the pieces fit together
+2. **Prerequisites** — Install required integrations
+3. **HAEO Setup** — Configure HAEO through the UI
+4. **Running HAEO** — Understand the automatic optimization
+5. **Dashboard** — Visualize your energy plan
+6. **Battery Automation** — Control your Sigenergy system
+7. **Conclusion** — Next steps and community resources
 
-Feedback and contributions are welcome. Feel free to raise issues or pull requests over on 
-[GitHub](https://github.com/AnnableLab/emhass-guide).
-
-## Getting started
-
-First, we will start with an overview of the general architecture of how everything fits together. Use the navigation 
-menu to explore the guide.
-
+Use the navigation menu to proceed through the guide.

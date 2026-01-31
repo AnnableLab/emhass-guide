@@ -1,57 +1,46 @@
 ---
 title: Home
 description:
-  A beginner's guide for setting up energy optimization with Home Assistant to automate a Sigenergy battery system using Amber
-  Electric pricing.
+  Beginner's guides for setting up energy optimization with Home Assistant to automate a Sigenergy battery system using Amber Electric pricing.
 ---
 
-This site provides beginner's guides for setting up energy optimization with Home Assistant. It specifically targets those
-with a Sigenergy system with Amber Electric pricing. In the end you will have Home Assistant automatically controlling
-your battery, optimizing when to charge and discharge to and from the grid based on pricing and weather forecasts. This
-is akin to Amber's SmartShift, but you have full control and able to run locally.
+This site provides step-by-step guides for setting up automated energy optimization with Home Assistant. The guides 
+target Sigenergy battery systems with Amber Electric pricing in Australia, but the concepts apply to other setups.
 
-## Choose Your Guide
+By the end, you'll have Home Assistant automatically controlling your battery — charging when prices are low, 
+discharging when prices are high, and maximizing your solar self-consumption. Think of it as a local, fully 
+customizable alternative to Amber's SmartShift.
 
-There are two approaches covered in this guide:
+## Choose Your Optimizer
 
-### EMHASS
+Both options use linear programming to find the optimal battery schedule. Choose based on your preference:
 
-[EMHASS (Energy Management for Home Assistant)](https://github.com/davidusb-geek/emhass) is a well-established Home Assistant addon that uses linear programming to optimize your energy usage.
+### HAEO (Recommended for new setups)
 
-**Pros:**
-- Mature and well-documented
-- Runs as a standalone addon
-- Large community support
+[HAEO](https://haeo.io/) is a native Home Assistant integration with UI-based configuration.
 
-**Cons:**
-- Requires more manual configuration
-- Uses REST commands for communication
-
-[**Start the EMHASS Guide →**](/emhass)
-
----
-
-### HAEO
-
-[HAEO (Home Assistant Energy Optimizer)](https://haeo.io/) is a newer Home Assistant custom integration that also uses linear programming to optimize your home's energy usage.
-
-**Pros:**
-- Native Home Assistant integration
-- Configuration via the UI
-- Works with [HAFO](https://hafo.haeo.io/) for load forecasting
-
-**Cons:**
-- Newer project with smaller community
-- Still under active development
+- Configure entirely through the Home Assistant UI
+- Automatic re-optimization when forecasts change
+- No YAML files or REST commands needed
+- Designed for use with [HAFO](https://hafo.haeo.io/) for load forecasting
+- Newer project, actively developed
 
 [**Start the HAEO Guide →**](/haeo)
 
----
+### EMHASS
 
-## Disclaimer
+[EMHASS](https://github.com/davidusb-geek/emhass) is a well-established Home Assistant addon.
 
-I do not claim to be an energy expert, and these guides are still a work in progress, but they provide complete
-working solutions. I am just a software engineer sharing my learnings in the hopes of helping others.
+- Mature and well-documented
+- Large community and extensive configuration options
+- Requires YAML configuration and REST commands
+- Runs as a standalone addon
 
-Feedback and contributions are welcome. Feel free to raise issues or pull requests over on
-[GitHub](https://github.com/AnnableLab/emhass-guide).
+[**Start the EMHASS Guide →**](/emhass)
+
+## About This Guide
+
+I'm a software engineer sharing my learnings — not an energy expert. These guides are a work in progress but provide 
+complete working solutions.
+
+Feedback and contributions welcome on [GitHub](https://github.com/AnnableLab/emhass-guide).

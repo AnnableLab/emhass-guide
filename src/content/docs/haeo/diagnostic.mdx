@@ -1,0 +1,117 @@
+---
+title: Diagnostics & Debugging
+description: How to debug HAEO optimization issues using Developer Tools and logging.
+---
+
+Unlike EMHASS which uses script traces for debugging, HAEO provides diagnostics through Home Assistant's native tools: 
+Developer Tools, entity inspection, and logging.
+
+### Checking Optimization Status
+
+The first thing to check is the optimization status sensor:
+
+1. Go to **Developer Tools** → **States**
+2. Search for `optimization_status`
+3. Check the state value:
+   - `success` — optimization completed successfully
+   - `failed` — optimization failed (check logs for details)
+   - `pending` — optimization is currently running
+
+For a network named "Sigenergy System", the sensor would be `sensor.sigenergy_system_optimization_status`.
+
+### Inspecting Input Data
+
+HAEO creates input entities for each configured element. You can inspect these to verify your input data is correct:
+
+1. Go to **Developer Tools** → **States**
+2. Search for your element names (e.g., "grid", "battery", "solar")
+3. Click on any `number.*` entity to see its attributes
+4. Check the `forecast` attribute for the input forecast data
+
+Key entities to inspect:
+- `number.grid_import_price` — import price forecast
+- `number.grid_export_price` — export price forecast  
+- `number.solar_forecast` — solar generation forecast
+- `sensor.load_power` — load forecast
+
+Each should have a `forecast` attribute containing a list of `{time, value}` entries.
+
+### Inspecting Output Data
+
+Similarly, check the output sensors:
+
+- `sensor.battery_active_power` — battery charge/discharge plan
+- `sensor.grid_active_power` — grid import/export plan
+- `sensor.battery_state_of_charge` — SOC forecast
+
+Click on any sensor and check:
+1. The current state value (first interval result)
+2. The `forecast` attribute (all future intervals)
+
+### Enabling Debug Logging
+
+For more detailed diagnostics, enable debug logging for HAEO:
+
+1. Add to your `configuration.yaml`:
+
+```yaml
+logger:
+  default: info
+  logs:
+    custom_components.haeo: debug
+```
+
+2. Restart Home Assistant
+3. Check logs in **Settings** → **System** → **Logs**
+
+Debug logs show:
+- When optimization is triggered
+- Data collection and processing details
+- Optimization solve time
+- Any errors or warnings
+
+### Common Issues
+
+#### 1. Optimization Status is "failed"
+
+Check the Home Assistant logs for error messages. Common causes:
+- Missing or invalid input sensors
+- Sensors returning `unavailable` or `unknown`
+- Invalid element configuration
+
+#### 2. No Forecast Data
+
+If a sensor's `forecast` attribute is empty:
+- Verify the source sensor has forecast data (e.g., Amber, Solcast)
+- Check the source sensor's `forecast` attribute format
+- Ensure HAEO is configured to use the correct sensor
+
+#### 3. Optimization Not Running
+
+If optimization doesn't seem to be running:
+- Check that input sensors are updating
+- Verify the hub is configured correctly
+- Try forcing a refresh via Developer Tools → Services → `homeassistant.update_entity`
+
+#### 4. Incorrect Power Values
+
+If power values seem wrong:
+- HAEO uses **kW** for all power values
+- Positive battery power = discharging
+- Negative battery power = charging
+- Positive grid power = importing
+- Negative grid power = exporting
+
+#### 5. Price Sensors Not Working
+
+Verify your Amber/Amber Express sensors:
+- Check `sensor.home_general_price` or `sensor.amber_express_home_general_price`
+- Verify the `forecast` attribute exists and contains data
+- Ensure the sensor is not `unavailable`
+
+### Getting Help
+
+If you're still having issues:
+- Check the [HAEO GitHub Discussions](https://github.com/hass-energy/haeo/discussions)
+- Include your optimization status, relevant sensor states, and any error logs
+

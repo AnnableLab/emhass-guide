@@ -1,26 +1,42 @@
 ---
-title: Home
-description:
-  A beginner's guide for setting up EMHASS with Home Assistant to automate a Sigenergy battery system using Amber
-  Electric pricing.
+title: Introduction
+description: Getting started with the EMHASS guide for Sigenergy battery automation.
 ---
 
-This site aims to be a beginner's guide for setting up **EMHASS** with Home Assistant. It specifically targets those
-with a Sigenergy system with Amber Electric pricing. In the end you will have home assistant automatically controlling
-your battery, optimizing when to charge and discharge to and from the grid based on pricing and weather forecasts. This
-is akin to Amber's SmartShift, but you have full control and able to run locally.
+Welcome to the EMHASS guide. This guide will walk you through setting up 
+[EMHASS](https://github.com/davidusb-geek/emhass) (Energy Management for Home Assistant) to automate your Sigenergy 
+battery system.
 
-## Disclaimer
+## What You'll Set Up
 
-I do not claim to be an energy expert, and this guide is still a work in progress, but it does provide a complete
-working solution. I am just a software engineer sharing my learnings in the hopes of helping others as I found EMHASS
-quite thorny to begin with.
+By following this guide, you'll configure:
 
-Feedback and contributions are welcome. Feel free to raise issues or pull requests over on
-[GitHub](https://github.com/AnnableLab/emhass-guide).
+1. **EMHASS addon** — The optimizer that creates your energy plan
+2. **REST commands** — Communication between Home Assistant and EMHASS
+3. **Scripts & automations** — Trigger optimization and apply the results
+4. **Dashboard** — Visualize your energy plan with ApexCharts
+5. **Battery automation** — Automatically control your Sigenergy system based on the plan
 
-## Getting started
+## Why EMHASS?
 
-First, we will start with an overview of the general architecture of how everything fits together. Use the navigation
-menu to explore the guide.
+EMHASS is a mature, well-established project with a large community:
 
+- **Proven solution** — Used by many in the Home Assistant community
+- **Extensive documentation** — Comprehensive configuration options
+- **Active development** — Continuously improved with new features
+- **Standalone addon** — Runs independently from Home Assistant core
+
+Note: EMHASS requires more manual configuration than HAEO, including YAML files and REST commands. If you prefer a 
+simpler UI-based setup, consider the [HAEO guide](/haeo) instead.
+
+## Guide Structure
+
+1. **Architecture** — Understand how the pieces fit together
+2. **Prerequisites** — Install required integrations
+3. **EMHASS Setup** — Configure REST commands and packages
+4. **Running EMHASS** — Create scripts and automations
+5. **Dashboard** — Visualize your energy plan
+6. **Battery Automation** — Control your Sigenergy system
+7. **Conclusion** — Next steps and community resources
+
+Use the navigation menu to proceed through the guide.
