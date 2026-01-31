@@ -3,11 +3,49 @@ title: Dashboard
 description: Set up an ApexCharts dashboard to visualize your HAEO energy plan.
 ---
 
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 import CodeBlock from "../../../components/CodeBlock.astro";
-import dashboardYaml from "../../../includes/dashboard.yaml?raw";
+import haeoDashboardYaml from "../../../includes/haeo_dashboard.yaml?raw";
+import haeoTableYaml from "../../../includes/haeo_table.yaml?raw";
 
-Here is an example dashboard that uses apex charts to view the energy plan produced by HAEO. I recommend using it to
-verify the energy plan before moving on to full battery automation.
+Here are example dashboards to visualize the energy plan produced by HAEO. I recommend using one of these to verify 
+the energy plan before moving on to full battery automation.
 
-<CodeBlock lang="yaml" code={dashboardYaml} />
+### ApexCharts Graph
+
+This dashboard uses ApexCharts to display a graphical view of your energy plan with solar, load, grid, battery, and 
+pricing data over the optimization horizon.
+
+<CodeBlock lang="yaml" code={haeoDashboardYaml} />
+
+The graph shows:
+- **Yellow area** — Solar forecast (kW)
+- **Purple area** — Load consumption (kW, inverted)
+- **Blue area** — Grid power (kW, positive = import, negative = export)
+- **Green area** — Battery power (kW, positive = discharge, negative = charge)
+- **Green dashed line** — Battery state of charge (%)
+- **Blue line** — Buy price ($/kWh)
+- **Magenta line** — Sell price ($/kWh)
+
+### Markdown Table
+
+This alternative uses a markdown card to display a tabular view of the forecast data. It's useful for seeing exact 
+values at each time interval.
+
+<CodeBlock lang="yaml" code={haeoTableYaml} />
+
+The table shows the forecast for each optimization interval including buy/sell prices, battery/grid/load/solar power, 
+state of charge, and expected profit.
+
+### Customization
+
+You may need to adjust the sensor entity names if you used different element names during HAEO setup. The default 
+names assume:
+- Network name: results in sensors like `sensor.{network}_optimization_*`
+- Battery name: results in `sensor.battery_*`
+- Grid name: results in `sensor.grid_*` and `number.grid_*`
+- Solar name: results in `sensor.solar_*` and `number.solar_*`
+- Load name: results in `sensor.load_*`
+
+You can find your actual entity IDs in **Settings** → **Devices & Services** → **HAEO** → click on your hub.
 

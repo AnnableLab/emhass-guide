@@ -1,0 +1,118 @@
+type: markdown
+content: >-
+  <center>
+
+
+  # HAEO Forecast
+
+
+  | Time | Buy | Sell | Battery | Grid | Load | Solar | SoC | Profit |
+
+  |:-----:|:------:|:------:|:----------:|:-------:|:-------:|:--------:|:-----:|:-----:|
+
+
+  {%- set horizon_fc = state_attr('sensor.optimizer_forecast_horizon',
+  'forecast') or [] %}
+
+  {%- set export_fc = state_attr('number.grid_export_price', 'forecast') or []
+  %}
+
+  {%- set import_fc = state_attr('number.grid_import_price', 'forecast') or []
+  %}
+
+  {%- set batt_fc = state_attr('sensor.battery_active_power', 'forecast') or
+  [] %}
+
+  {%- set grid_fc = state_attr('sensor.grid_active_power', 'forecast') or [] %}
+
+  {%- set load_fc = state_attr('sensor.load_power', 'forecast') or [] %}
+
+  {%- set solar_fc = state_attr('sensor.solar_power', 'forecast') or [] %}
+
+  {%- set soc_fc = state_attr('sensor.battery_state_of_charge', 'forecast')
+  or [] %}
+
+  {%- set net_cost_fc = state_attr('sensor.grid_net_cost', 'forecast') or []
+  %}
+
+
+  {%- set export_map = namespace(d={}) %}
+
+  {%- set import_map = namespace(d={}) %}
+
+  {%- set batt_map = namespace(d={}) %}
+
+  {%- set grid_map = namespace(d={}) %}
+
+  {%- set load_map = namespace(d={}) %}
+
+  {%- set solar_map = namespace(d={}) %}
+
+  {%- set soc_map = namespace(d={}) %}
+
+  {%- set net_cost_map = namespace(d={}) %}
+
+
+  {%- for p in export_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set export_map.d = dict(export_map.d, **{ (ts|string): (p.value | round(2)) }) %}
+  {%- endfor %}
+
+  {%- for p in import_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set import_map.d = dict(import_map.d, **{ (ts|string): (p.value | round(2)) }) %}
+  {%- endfor %}
+
+  {%- for p in batt_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set batt_map.d = dict(batt_map.d, **{ (ts|string): (p.value | round(1)) }) %}
+  {%- endfor %}
+
+  {%- for p in grid_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set grid_map.d = dict(grid_map.d, **{ (ts|string): (p.value | round(1)) }) %}
+  {%- endfor %}
+
+  {%- for p in load_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set load_map.d = dict(load_map.d, **{ (ts|string): (p.value | round(1)) }) %}
+  {%- endfor %}
+
+  {%- for p in solar_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set solar_map.d = dict(solar_map.d, **{ (ts|string): (p.value | round(1)) }) %}
+  {%- endfor %}
+
+  {%- for p in soc_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set soc_map.d = dict(soc_map.d, **{ (ts|string): (p.value | round(0)) }) %}
+  {%- endfor %}
+
+  {%- for p in net_cost_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set net_cost_map.d = dict(net_cost_map.d, **{ (ts|string): (p.value | round(0)) }) %}
+  {%- endfor %}
+
+
+  {%- if horizon_fc %}
+  {%- for p in horizon_fc %}
+  {%- set ts = p.time | as_datetime | as_local | as_timestamp %}
+  {%- set t = ts | timestamp_custom('%H:%M') %}
+  {%- set ex = export_map.d.get(ts|string) %}
+  {%- set im = import_map.d.get(ts|string) %}
+  {%- set b = batt_map.d.get(ts|string) %}
+  {%- set g = grid_map.d.get(ts|string) %}
+  {%- set l = load_map.d.get(ts|string) %}
+  {%- set s = solar_map.d.get(ts|string) %}
+  {%- set soc = soc_map.d.get(ts|string) %}
+  {%- set cost = net_cost_map.d.get(ts|string) %}
+  | **{{ t }}** | {{ im if im is not none else '—' }} | {{ ex if ex is not none else '—' }} | {{ b if b is not none else '—' }} | {{ g if g is not none else '—' }} | {{ l if l is not none else '—' }} | {{ s if s is not none else '—' }} | {{ soc if soc is not none else '—' }} | ${{ -cost if cost is not none else '—' }} |
+  {%- endfor %}
+  {%- else %}
+
+  | — | No forecast data available | — | — | — | — | — | — |
+
+  {%- endif %}
+
+
+  </center>

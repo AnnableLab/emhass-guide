@@ -1,0 +1,102 @@
+alias: HAEO Sigenergy Battery Management
+description: Automatically control the Sigenergy battery system using the HAEO energy plan
+triggers:
+  - trigger: state
+    entity_id:
+      - sensor.battery_active_power
+      - sensor.grid_active_power
+    from: null
+    to: null
+actions:
+  - variables:
+      p_batt: "{{ states('sensor.battery_active_power') | float(0) * 1000 }}"
+      p_batt_kw: "{{ states('sensor.battery_active_power') | float(0) | round(3) }}"
+      p_grid: "{{ states('sensor.grid_active_power') | float(0) * 1000 }}"
+      max_charge_rate: "{{ states('sensor.sigen_plant_ess_rated_charging_power') | float(0) }}"
+      max_discharge_rate: "{{ states('sensor.sigen_plant_ess_rated_discharging_power') | float(0) }}"
+      max_export_rate_kw: 30
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ p_grid == 0 }}"
+        sequence:
+          - action: select.select_option
+            metadata: {}
+            data:
+              option: Maximum Self Consumption
+            target:
+              entity_id: select.sigen_plant_remote_ems_control_mode
+            alias: Maximum Self Consumption
+          - action: number.set_value
+            metadata: {}
+            data:
+              value: "{{ max_charge_rate }}"
+            target:
+              entity_id:
+                - number.sigen_plant_ess_max_charging_limit
+          - action: number.set_value
+            metadata: {}
+            data:
+              value: "{{ max_discharge_rate }}"
+            target:
+              entity_id:
+                - number.sigen_plant_ess_max_discharging_limit
+        alias: Check self consume conditions
+      - conditions:
+          - condition: template
+            value_template: "{{ p_batt > 0 or (p_grid < 0 and p_batt == 0) }}"
+        sequence:
+          - action: select.select_option
+            metadata: {}
+            data:
+              option: Command Discharging (PV First)
+            target:
+              entity_id: select.sigen_plant_remote_ems_control_mode
+          - if:
+              - condition: template
+                value_template: "{{ p_grid == max_export_rate_kw * -1000 }}"
+            then:
+              - action: number.set_value
+                metadata: {}
+                data:
+                  value: "{{ max_discharge_rate }}"
+                target:
+                  entity_id: number.sigen_plant_ess_max_discharging_limit
+            else:
+              - action: number.set_value
+                metadata: {}
+                data:
+                  value: "{{ p_batt_kw }}"
+                target:
+                  entity_id: number.sigen_plant_ess_max_discharging_limit
+        alias: Check discharge conditions
+      - conditions:
+          - condition: template
+            value_template: "{{ p_batt < 0 }}"
+        sequence:
+          - action: select.select_option
+            metadata: {}
+            data:
+              option: Command Charging (PV First)
+            target:
+              entity_id: select.sigen_plant_remote_ems_control_mode
+          - action: number.set_value
+            metadata: {}
+            data:
+              value: "{{ p_batt_kw | abs }}"
+            target:
+              entity_id:
+                - number.sigen_plant_ess_max_charging_limit
+        alias: Check charge conditions
+      - conditions:
+          - condition: template
+            value_template: "{{ p_batt == 0 }}"
+        sequence:
+          - action: select.select_option
+            metadata: {}
+            data:
+              option: Standby
+            target:
+              entity_id: select.sigen_plant_remote_ems_control_mode
+        alias: Check standby conditions
+mode: queued

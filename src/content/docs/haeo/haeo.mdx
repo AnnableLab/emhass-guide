@@ -1,79 +1,79 @@
 ---
 title: Running HAEO
-description: Create scripts and automations to run HAEO and generate your energy optimization plan.
+description: Understanding how HAEO automatically optimizes your energy system.
 ---
 
-import { Tabs, TabItem } from "@astrojs/starlight/components";
-import CodeBlock from "../../../components/CodeBlock.astro";
-import { applyPatch } from "diff";
-import emhassAmberScriptYaml from "../../../includes/emhass_script.yaml?raw";
-import emhassA2MScriptPatchYaml from "../../../includes/emhass_script.patch?raw";
-import emhassAmberAutomationYaml from "../../../includes/emhass_automation.yaml?raw";
-import emhassA2MAutomationPatchYaml from "../../../includes/emhass_automation.patch?raw";
+Unlike EMHASS which requires scripts and automations to trigger optimization, HAEO runs automatically. There's no need 
+to create scripts, REST commands, or scheduled automations to run the optimizer.
 
-export const emhassA2MScriptYaml = applyPatch(emhassAmberScriptYaml, emhassA2MScriptPatchYaml) || emhassAutomationYaml;
-export const emhassA2MAutomationYaml =
-  applyPatch(emhassAmberAutomationYaml, emhassA2MAutomationPatchYaml) || emhassA2MScriptPatchYaml;
+### Automatic Optimization
 
-To run HAEO, we want to execute the rest commands we setup earlier with all the parameters they need. In this guide we
-will use scripts.
+HAEO automatically re-optimizes whenever any of your input sensors update:
 
-You will also need to manually enable these disabled Sigenergy Plant sensors in order for the script to function:
+- Price forecasts change (Amber updates prices every 5 minutes)
+- Solar forecasts update (Solcast updates periodically)
+- Battery state of charge changes
+- Load forecast updates
 
-- `sensor.sigen_plant_rated_energy_capacity`
-- `sensor.sigen_plant_ess_rated_charging_power`
-- `sensor.sigen_plant_ess_rated_discharging_power`
-- `sensor.sigen_plant_max_active_power`
+This event-driven approach means your energy plan is always up-to-date with the latest information. You don't need to 
+worry about scheduling optimization runs or missing price changes.
 
-Solcast by default only enables today and tomorrow solar forecast sensors, meaning at 11pm you'll only get 25 hours of
-forecasting. You will need to enable the solcast day 3 forecast sensor to always provide 2 full days of solar
-forecasting (and if you want longer horizons, you can enable up to 7 days and add them to the forecasts list within the
-script).
+### Checking Optimization Status
 
-- `sensor.solcast_pv_forecast_forecast_day_3`
+You can monitor optimization through these sensors:
 
-Next, create a new script from scratch (under Settings → Automations & Scenes → Scripts), switch to YAML mode and add
-the content below.
+| Sensor | Description |
+| ------ | ----------- |
+| `sensor.{network}_optimization_status` | Shows `success`, `failed`, or `pending` |
+| `sensor.{network}_optimization_duration` | How long the optimization took (seconds) |
+| `sensor.{network}_optimization_cost` | Total forecasted cost ($) |
 
-The critical variables to configure are at the very top.
+For a network named "Sigenergy System", these would be:
+- `sensor.sigenergy_system_optimization_status`
+- `sensor.sigenergy_system_optimization_duration`
+- `sensor.sigenergy_system_optimization_cost`
 
-1. `costfun` — this can be either `profit`, `cost` or `self-consumption`, which either maximize profit, minimize cost or
-   maximize self-consumption (selling any excess).
-   - UPDATE: There is currently an [open issue](https://github.com/davidusb-geek/emhass/issues/559) within HAEO
-     preventing this parameter from working correctly. For now, you will need to set it via the HAEO Config editor.
-2. `maximum_power_from_grid` — this is the maximum power you can draw from the grid (e.g. when charging your batteries
-   from the grid).
-3. `maximum_power_to_grid` — this is the maximum power you can feed into the grid (e.g. when exporting solar, or
-   discharging batteries).
-4. `battery_minimum_percent` — what percentage (0-100) of your battery you always want to keep as a minimum (e.g. for
-   blackout protection).
+### Manual Refresh
 
-<Tabs syncKey="amber">
-  <TabItem label="Amber Integration">
-    <CodeBlock lang="yaml" code={emhassAmberScriptYaml} />
-  </TabItem>
-  <TabItem label="Amber2MQTT">
-    <CodeBlock lang="yaml" code={emhassA2MScriptYaml} />
-  </TabItem>
-</Tabs>
+If you ever need to force a re-optimization:
 
-If you run this script, HAEO will produce a plan for the day. You should be able to manually run the script and check
-the output in the HAEO webview. We will also be adding our own output dashboard shortly.
+1. Go to **Developer Tools** → **Services**
+2. Call `homeassistant.update_entity` 
+3. Target any HAEO sensor (e.g., `sensor.sigenergy_system_optimization_status`)
 
-You'll want to be running this script regularly as forecasts change throughout the day, so the next step is to setup a
-new automation:
+Or simply click on any HAEO sensor in the UI and use the refresh button.
 
-<Tabs syncKey="amber">
-  <TabItem label="Amber Integration">
-    <CodeBlock lang="yaml" code={emhassAmberAutomationYaml} />
-  </TabItem>
-  <TabItem label="Amber2MQTT">
-    <CodeBlock lang="yaml" code={emhassA2MAutomationYaml} />
-  </TabItem>
-</Tabs>
+### Output Sensors
 
-This will run every time the prices change.
+HAEO creates sensors for each element you configured. These sensors contain both the current optimized value and a 
+`forecast` attribute with future values across the entire optimization horizon.
 
-Note: On my Intel NUC Home Assistant server, this script takes a couple of seconds to run. If you are running lower-end
-hardware, you may want to either increase the optimization time step or reduce the running frequency.
+**Battery sensors:**
+- `sensor.battery_active_power` — current optimal power (positive = discharge, negative = charge)
+- `sensor.battery_state_of_charge` — current and forecasted SOC
+
+**Grid sensors:**
+- `sensor.grid_active_power` — current optimal grid power (positive = import, negative = export)
+- `number.grid_import_price` — import price with forecast
+- `number.grid_export_price` — export price with forecast
+
+**Solar sensors:**
+- `sensor.solar_power` — optimal solar generation
+- `number.solar_forecast` — solar forecast input
+
+**Load sensors:**
+- `sensor.load_power` — load power forecast
+
+All sensors include a `forecast` attribute containing timestamped future values. You can inspect these in 
+**Developer Tools** → **States** by clicking on any HAEO sensor.
+
+### Performance
+
+On typical hardware, HAEO optimization completes in 1-5 seconds. If optimization is taking too long:
+
+- Reduce tier 4 count (fewer far-future intervals)
+- Increase tier durations (coarser resolution)
+- Simplify your network (fewer elements)
+
+You can monitor performance via `sensor.{network}_optimization_duration`.
 
