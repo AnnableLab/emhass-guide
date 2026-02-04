@@ -28,10 +28,10 @@ sequence:
             - sensor.solcast_pv_forecast_forecast_tomorrow
             - sensor.solcast_pv_forecast_forecast_day_3
         amber:
-          general_price: sensor.home_general_price
-          general_forecast: sensor.home_general_forecast
-          feed_in_price: sensor.home_feed_in_price
-          feed_in_forecast: sensor.home_feed_in_forecast
+          general_price: sensor.amber_express_home_general_price
+          general_forecast: sensor.amber_express_home_general_forecast
+          feed_in_price: sensor.amber_express_home_feed_in_price
+          feed_in_forecast: sensor.amber_express_home_feed_in_forecast
     alias: Configure sensor entities
   - action: recorder.get_statistics
     data:
