@@ -3,14 +3,9 @@ title: Automation & Scheduling
 description: Automate battery control based on the EMHASS energy plan and handle negative pricing.
 ---
 
-import { Tabs, TabItem } from "@astrojs/starlight/components";
 import CodeBlock from "../../components/CodeBlock.astro";
-import { applyPatch } from "diff";
 import batteryAutomationYaml from "../../includes/battery_automation.yaml?raw";
 import curtailmentYaml from "../../includes/curtailment.yaml?raw";
-import curtailmentPatch from "../../includes/curtailment.patch?raw";
-
-export const curtailmentYamlPatched = applyPatch(curtailmentYaml, curtailmentPatch) || curtailmentYaml;
 
 EMHASS by itself just creates the energy plan, but it won't actually know how to execute upon it. In order to execute
 the plan, we will need an automation.
@@ -45,11 +40,4 @@ You will also want an automation to automatically handle negative prices. This a
 negative feed-in price and will also prevent using solar when there is a negative general price (as you'll make more
 money drawing from the grid instead).
 
-<Tabs>
-  <TabItem label="Amber Integration">
-    <CodeBlock lang="yaml" code={curtailmentYaml} />
-  </TabItem>
-  <TabItem label="Amber2MQTT">
-    <CodeBlock lang="yaml" code={curtailmentYamlPatched} />
-  </TabItem>
-</Tabs>
+<CodeBlock lang="yaml" code={curtailmentYaml} />

@@ -28,10 +28,8 @@ sequence:
             - sensor.solcast_pv_forecast_forecast_tomorrow
             - sensor.solcast_pv_forecast_forecast_day_3
         amber:
-          general_price: sensor.home_general_price
-          general_forecast: sensor.home_general_forecast
-          feed_in_price: sensor.home_feed_in_price
-          feed_in_forecast: sensor.home_feed_in_forecast
+          general: sensor.amber_express_home_general_price
+          feed_in: sensor.amber_express_home_feed_in_price
     alias: Configure sensor entities
   - action: recorder.get_statistics
     data:
@@ -73,40 +71,22 @@ sequence:
         soc_init: "{{ soc_init }}"
         soc_final: "{{ soc_final }}"
         load_cost_forecast: |-
-          {% set ns = namespace(
-            input=(
-                state_attr(sensors.amber.general_forecast, 'forecasts') | list
-            ) | selectattr('per_kwh', 'is_number') | list,
-            output={
-              now_iso: states(sensors.amber.general_price) | float(0)
-            }
-          ) %}
+          {% set ns = namespace(output={}) %}
           {% for day in range(num_prediction_days) %}
-            {% for forecast in ns.input %}
-              {% if forecast.start_time | as_datetime > now() %}
-                {% set start = forecast.start_time | as_datetime | as_local + timedelta(days=day) %}
-                {% set price = forecast.per_kwh | float(0) %}
-                {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
-              {% endif %}
+            {% for forecast in state_attr(sensors.amber.general, 'forecast') %}
+              {% set start = forecast.time | as_datetime | as_local + timedelta(days=day) %}
+              {% set price = forecast.value | float(0) %}
+              {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
             {% endfor %}
           {% endfor %}
           {{ ns.output }}
         prod_price_forecast: |-
-          {% set ns = namespace(
-            input=(
-                state_attr(sensors.amber.feed_in_forecast, 'forecasts') | list
-            ) | selectattr('per_kwh', 'is_number') | list,
-            output={
-              now_iso: states(sensors.amber.feed_in_price) | float(0)
-            }
-          ) %}
+          {% set ns = namespace(output={}) %}
           {% for day in range(num_prediction_days) %}
-            {% for forecast in ns.input %}
-              {% if forecast.start_time | as_datetime > now() %}
-                {% set start = forecast.start_time | as_datetime | as_local + timedelta(days=day) %}
-                {% set price = forecast.per_kwh | float(0) %}
-                {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
-              {% endif %}
+            {% for forecast in state_attr(sensors.amber.feed_in, 'forecast') %}
+              {% set start = forecast.time | as_datetime | as_local + timedelta(days=day) %}
+              {% set price = forecast.value | float(0) %}
+              {% set ns.output = ns.output | combine({ start.isoformat(): price }) %}
             {% endfor %}
           {% endfor %}
           {{ ns.output }}
