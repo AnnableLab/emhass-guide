@@ -6,7 +6,14 @@ triggers:
       - sensor.amber_express_home_general_price
       - sensor.amber_express_home_feed_in_price
     enabled: true
-conditions: []
+conditions:
+  - condition: state
+    entity_id:
+      - sensor.amber_express_home_general_price
+      - sensor.amber_express_home_feed_in_price
+    attribute: estimate
+    state:
+      - false
 actions:
   - action: script.generate_emhass_energy_plan_mpc
     metadata: {}
