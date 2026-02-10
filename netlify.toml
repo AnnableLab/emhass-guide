@@ -1,6 +1,9 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  # Ignore builds if changes are only in tests, src/includes, or other non-web files
+  # Only build if changes occur in these specific web-related paths
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- src/components src/content src/styles src/content.config.ts public astro.config.mjs package.json package-lock.json netlify.toml"
 
 [build.environment]
   NODE_VERSION = "20"

@@ -11,3 +11,16 @@ node_modules/
 
 # Netlify
 .netlify/
+
+# Python Testing
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+.python-version
