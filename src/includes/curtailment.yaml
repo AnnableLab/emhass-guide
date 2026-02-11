@@ -6,22 +6,22 @@ variables:
 triggers:
   - trigger: numeric_state
     entity_id:
-      - sensor.home_feed_in_price
+      - sensor.amber_express_home_feed_in_price
     below: 0
     id: negative_fit
   - trigger: numeric_state
     entity_id:
-      - sensor.home_feed_in_price
+      - sensor.amber_express_home_feed_in_price
     id: positive_fit
     above: 0
   - trigger: numeric_state
     entity_id:
-      - sensor.home_general_price
+      - sensor.amber_express_home_general_price
     above: 0
     id: positive_price
   - trigger: numeric_state
     entity_id:
-      - sensor.home_general_price
+      - sensor.amber_express_home_general_price
     below: 0
     id: negative_price
   - trigger: state
@@ -34,7 +34,7 @@ actions:
   - alias: Curtail if feedin price is negative
     if:
       - condition: numeric_state
-        entity_id: sensor.home_feed_in_price
+        entity_id: sensor.amber_express_home_feed_in_price
         below: 0
     then:
       - action: number.set_value
@@ -55,7 +55,7 @@ actions:
   - alias: Ignore PV if usage price is negative
     if:
       - condition: numeric_state
-        entity_id: sensor.home_general_price
+        entity_id: sensor.amber_express_home_general_price
         below: 0
       - condition: state
         entity_id: sensor.sigen_plant_grid_connection_status

@@ -3,10 +3,17 @@ description: "Automatically generate EMHASS energy plan when prices change"
 triggers:
   - trigger: state
     entity_id:
-      - sensor.home_general_price
-      - sensor.home_feed_in_price
+      - sensor.amber_express_home_general_price
+      - sensor.amber_express_home_feed_in_price
     enabled: true
-conditions: []
+conditions:
+  - condition: state
+    entity_id:
+      - sensor.amber_express_home_general_price
+      - sensor.amber_express_home_feed_in_price
+    attribute: estimate
+    state:
+      - false
 actions:
   - action: script.generate_emhass_energy_plan_mpc
     metadata: {}

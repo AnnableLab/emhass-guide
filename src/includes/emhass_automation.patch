@@ -1,7 +1,0 @@
---- src/includes/emhass_automation.yaml
-+++ src/includes/emhass_automation.yaml
-@@ -6,2 +6,2 @@
--      - sensor.home_general_price
--      - sensor.home_feed_in_price
-+      - sensor.amber_5min_current_general_price
-+      - sensor.amber_5min_current_feed_in_price
