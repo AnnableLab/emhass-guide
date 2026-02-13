@@ -15,7 +15,7 @@ If you want to skip ahead, make sure you have everything listed here installed. 
 - [HACS Integration](https://www.hacs.xyz/)
 - [Sigenergy modbus integration](https://github.com/TypQxQ/Sigenergy-Local-Modbus)
 - [Solcast Integration](https://github.com/BJReplay/ha-solcast-solar/tree/main)
-- [Amber Electric Integration](https://www.home-assistant.io/integrations/amberelectric/) or [Amber Express](https://github.com/hass-energy/amber-express)
+- [Amber Express](https://github.com/hass-energy/amber-express)
 - [HAEO Integration](https://haeo.io/)
 - [HAFO Integration](https://hafo.haeo.io/) (for load forecasting)
 - [ApexCharts Card](https://github.com/RomRider/apexcharts-card) (Optional)
@@ -49,27 +49,14 @@ can weight average them down to 2 (e.g. East and West). It is on my TODO list to
 
 ### Pricing forecast
 
-For price forecasting you have two options:
-
-#### Amber Electric Integration (Official)
-
-The [Amber Electric Integration](https://www.home-assistant.io/integrations/amberelectric/) is the official integration. 
-This will require an API key that can be obtained via the [amber webapp](https://app.amber.com.au/) (Make sure to enable 
-developer mode).
-
-This guide assumes a site name of `Home`. If you use another name, you'll need to adjust the sensor entity names.
-
-#### Amber Express (Recommended)
-
-[Amber Express](https://github.com/hass-energy/amber-express) is an alternative integration designed specifically for 
-HAEO compatibility. It offers:
+For price forecasting we will be using [Amber Express](https://github.com/hass-energy/amber-express). It offers:
 
 - Faster price updates via adaptive polling
 - HAEO-compatible forecast format with `interpolation_mode: previous`
 - Optional WebSocket support for real-time updates
 - Demand window price handling
 
-If you're setting up a new system, Amber Express is the recommended choice for use with HAEO.
+Install it via HACS by adding the repository as a custom integration.
 
 ### HAEO Optimizer
 
