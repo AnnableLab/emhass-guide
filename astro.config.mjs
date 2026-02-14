@@ -57,7 +57,6 @@ export default defineConfig({
             { label: "Architecture", link: "/haeo/architecture" },
             { label: "Prerequisites", link: "/haeo/prerequisites" },
             { label: "HAEO Setup", link: "/haeo/setup" },
-            { label: "Running HAEO", link: "/haeo/haeo" },
             { label: "Dashboard", link: "/haeo/dashboard" },
             { label: "Battery Automation", link: "/haeo/automation" },
             { label: "Conclusion", link: "/haeo/conclusion" },
