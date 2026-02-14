@@ -34,7 +34,40 @@ For each input field, you can choose:
 - **Constant** — enter a fixed value directly
 - **None** — skip optional fields
 
-### Step 1: Add Inverter
+### Step 1: Add Grid
+
+Connect the grid to the Switchboard:
+
+| Field            | Value                  |
+| ---------------- | ---------------------- |
+| **Name**         | Grid                   |
+| **Connection**   | Switchboard            |
+| **Import Price** | `Home - General Price` |
+| **Export Price** | `Home - Feed In Price` |
+| **Import Limit** | 55                     |
+| **Export Limit** | 30                     |
+
+The price sensors come from either:
+- **Amber Electric Integration** — sensors named `sensor.home_general_price` and `sensor.home_feed_in_price`
+- **Amber Express** — sensors named `sensor.amber_express_home_general_price` and `sensor.amber_express_home_feed_in_price`
+
+Both provide the required `forecast` attribute that HAEO uses for price optimization.
+
+### Step 2: Add Load
+
+Connect the load to the Switchboard:
+
+| Field          | Value       |
+| -------------- | ----------- |
+| **Name**       | Load        |
+| **Connection** | Switchboard |
+
+For the **Forecast** field, you have options:
+- **HAFO sensor** — if you've set up HAFO for load forecasting, use your HAFO sensor
+- **Constant value** — enter a fixed load value (e.g., 1 kW baseline)
+- **Input helper** — create an `input_number` helper to adjust load dynamically
+
+### Step 3: Add Inverter
 
 The Inverter element models your hybrid inverter with its built-in DC bus.
 
@@ -45,7 +78,24 @@ The Inverter element models your hybrid inverter with its built-in DC bus.
 | **Max DC to AC power** | `Sigen Plant Max Active Power` |
 | **Max AC to DC power** | `Sigen Plant Max Active Power` |
 
-### Step 2: Add Battery
+### Step 4: Add Solar
+
+Connect solar to the Inverter's DC side:
+
+| Field           | Value    |
+| --------------- | -------- |
+| **Name**        | Solar    |
+| **Connection**  | Inverter |
+| **Curtailment** | Yes      |
+
+For the **Forecast** field, use the "Add entity" button to select your Solcast sensors. You'll want to enable and add:
+- `sensor.solcast_pv_forecast_forecast_today`
+- `sensor.solcast_pv_forecast_forecast_tomorrow`
+- `sensor.solcast_pv_forecast_forecast_day_3`
+
+If you have multiple arrays, you can add all of them and HAEO will combine them automatically.
+
+### Step 5: Add Battery
 
 Connect the battery to the Inverter's DC side:
 
@@ -66,56 +116,6 @@ You will need to enable these disabled Sigenergy sensors first:
 - `sensor.sigen_plant_rated_energy_capacity`
 - `sensor.sigen_plant_ess_rated_charging_power`
 - `sensor.sigen_plant_ess_rated_discharging_power`
-
-### Step 3: Add Solar
-
-Connect solar to the Inverter's DC side:
-
-| Field           | Value    |
-| --------------- | -------- |
-| **Name**        | Solar    |
-| **Connection**  | Inverter |
-| **Curtailment** | Yes      |
-
-For the **Forecast** field, use the "Add entity" button to select your Solcast sensors. You'll want to enable and add:
-- `sensor.solcast_pv_forecast_forecast_today`
-- `sensor.solcast_pv_forecast_forecast_tomorrow`
-- `sensor.solcast_pv_forecast_forecast_day_3`
-
-If you have multiple arrays, you can add all of them and HAEO will combine them automatically.
-
-### Step 4: Add Grid
-
-Connect the grid to the Switchboard:
-
-| Field            | Value                  |
-| ---------------- | ---------------------- |
-| **Name**         | Grid                   |
-| **Connection**   | Switchboard            |
-| **Import Price** | `Home - General Price` |
-| **Export Price** | `Home - Feed In Price` |
-| **Import Limit** | 55                     |
-| **Export Limit** | 30                     |
-
-The price sensors come from either:
-- **Amber Electric Integration** — sensors named `sensor.home_general_price` and `sensor.home_feed_in_price`
-- **Amber Express** — sensors named `sensor.amber_express_home_general_price` and `sensor.amber_express_home_feed_in_price`
-
-Both provide the required `forecast` attribute that HAEO uses for price optimization.
-
-### Step 5: Add Load
-
-Connect the load to the Switchboard:
-
-| Field          | Value       |
-| -------------- | ----------- |
-| **Name**       | Load        |
-| **Connection** | Switchboard |
-
-For the **Forecast** field, you have options:
-- **HAFO sensor** — if you've set up HAFO for load forecasting, use your HAFO sensor
-- **Constant value** — enter a fixed load value (e.g., 1 kW baseline)
-- **Input helper** — create an `input_number` helper to adjust load dynamically
 
 ### Verification
 
