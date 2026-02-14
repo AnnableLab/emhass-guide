@@ -36,7 +36,7 @@ You will also need to manually enable these disabled Sigenergy Plant sensors in 
 
 <CodeBlock lang="yaml" code={haeoAutomationYaml} />
 
-Key differences from EMHASS version:
+Automation notes:
 - Triggers on HAEO sensors: `sensor.battery_active_power` and `sensor.grid_active_power`
 - HAEO outputs values in **kW**, so we multiply by 1000 to convert to watts for Sigenergy
 - Uses `mode: queued` to handle rapid updates gracefully
