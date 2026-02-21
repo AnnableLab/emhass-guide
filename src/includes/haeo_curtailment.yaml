@@ -1,0 +1,79 @@
+alias: Sigenergy Inverter Curtailment
+description: Automatically manage negative energy prices by curtailing exporting and solar generation
+variables:
+  max_export_kw: 30
+  max_pv_kw: 100
+triggers:
+  - trigger: numeric_state
+    entity_id:
+      - sensor.home_feed_in_price
+    below: 0
+    id: negative_fit
+  - trigger: numeric_state
+    entity_id:
+      - sensor.home_feed_in_price
+    id: positive_fit
+    above: 0
+  - trigger: numeric_state
+    entity_id:
+      - sensor.home_general_price
+    above: 0
+    id: positive_price
+  - trigger: numeric_state
+    entity_id:
+      - sensor.home_general_price
+    below: 0
+    id: negative_price
+  - trigger: state
+    entity_id:
+      - sensor.sigen_plant_grid_connection_status
+    from: null
+    to: null
+    id: grid_connection_change
+actions:
+  - alias: Curtail if feedin price is negative
+    if:
+      - condition: numeric_state
+        entity_id: sensor.home_feed_in_price
+        below: 0
+    then:
+      - action: number.set_value
+        metadata: {}
+        data:
+          value: 0
+        target:
+          entity_id: number.sigen_plant_grid_export_limitation
+        alias: Set export limit to 0
+    else:
+      - action: number.set_value
+        metadata: {}
+        data:
+          value: "{{ max_export_kw }}"
+        target:
+          entity_id: number.sigen_plant_grid_export_limitation
+        alias: Set export limit to max
+  - alias: Ignore PV if usage price is negative
+    if:
+      - condition: numeric_state
+        entity_id: sensor.home_general_price
+        below: 0
+      - condition: state
+        entity_id: sensor.sigen_plant_grid_connection_status
+        state: On Grid
+    then:
+      - action: number.set_value
+        metadata: {}
+        data:
+          value: 0
+        target:
+          entity_id: number.sigen_plant_pv_max_power_limit
+        alias: Set PV limit to 0
+    else:
+      - action: number.set_value
+        metadata: {}
+        data:
+          value: "{{ max_pv_kw }}"
+        target:
+          entity_id: number.sigen_plant_pv_max_power_limit
+        alias: Set PV limit to Maximum
+mode: queued

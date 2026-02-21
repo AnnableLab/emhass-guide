@@ -1,0 +1,131 @@
+---
+title: HAEO Setup
+description: Configure HAEO through the Home Assistant UI to create your energy optimization network.
+---
+
+HAEO configuration happens entirely through Home Assistant's UI. You'll create a Hub, then add Elements to represent your energy system components.
+
+### Creating the Hub
+
+1. Navigate to **Settings** → **Devices & Services**
+2. Click the **Add Integration** button (+ in bottom right)
+3. Search for **HAEO** or **Home Assistant Energy Optimizer**
+4. Click on it to start the configuration flow
+
+For hub configuration, keep the default values and keep the default hub name unchanged.
+
+After submitting, you should see a **Switchboard** element already exists. This is the AC power balance point where 
+grid and loads connect.
+
+### Adding Elements
+
+After creating your hub, add elements through the Home Assistant UI:
+
+1. Navigate to **Settings** → **Devices & Services**
+2. Find your **HAEO** integration
+3. Click on the integration card to open the hub details page
+4. Click the **⋮ menu button** (three vertical dots in top right)
+5. Select **Add Entry** from the dropdown menu
+6. Choose the element type and complete the configuration
+
+For each input field, you can choose:
+- **Entity** — link to a Home Assistant sensor
+- **Constant** — enter a fixed value directly
+- **None** — skip optional fields
+
+### Step 1: Add Grid
+
+Connect the grid to the Switchboard:
+
+| Field            | Value                  |
+| ---------------- | ---------------------- |
+| **Name**         | Grid                   |
+| **Connection**   | Switchboard            |
+| **Import Price** | `Home - General Price` |
+| **Export Price** | `Home - Feed In Price` |
+| **Import Limit** | 55                     |
+| **Export Limit** | 30                     |
+
+The price sensors come from either:
+- **Amber Electric Integration** — sensors named `sensor.home_general_price` and `sensor.home_feed_in_price`
+- **Amber Express** — sensors named `sensor.amber_express_home_general_price` and `sensor.amber_express_home_feed_in_price`
+
+Both provide the required `forecast` attribute that HAEO uses for price optimization.
+
+### Step 2: Add Load
+
+Connect the load to the Switchboard:
+
+| Field          | Value       |
+| -------------- | ----------- |
+| **Name**       | Load        |
+| **Connection** | Switchboard |
+
+For the **Forecast** field, you have options:
+- **HAFO sensor** — if you've set up HAFO for load forecasting, use your HAFO sensor
+- **Constant value** — enter a fixed load value (e.g., 1 kW baseline)
+- **Input helper** — create an `input_number` helper to adjust load dynamically
+
+### Step 3: Add Inverter
+
+The Inverter element models your hybrid inverter with its built-in DC bus.
+
+| Field                  | Value                          |
+| ---------------------- | ------------------------------ |
+| **Name**               | Inverter                       |
+| **AC Connection**      | Switchboard                    |
+| **Max DC to AC power** | `Sigen Plant Max Active Power` |
+| **Max AC to DC power** | `Sigen Plant Max Active Power` |
+
+### Step 4: Add Solar
+
+Connect solar to the Inverter's DC side:
+
+| Field           | Value    |
+| --------------- | -------- |
+| **Name**        | Solar    |
+| **Connection**  | Inverter |
+| **Curtailment** | Yes      |
+
+For the **Forecast** field, use the "Add entity" button to select your Solcast sensors. You'll want to enable and add:
+- `sensor.solcast_pv_forecast_forecast_today`
+- `sensor.solcast_pv_forecast_forecast_tomorrow`
+- `sensor.solcast_pv_forecast_forecast_day_3`
+
+If you have multiple arrays, you can add all of them and HAEO will combine them automatically.
+
+### Step 5: Add Battery
+
+Connect the battery to the Inverter's DC side:
+
+| Field                         | Value                                     |
+| ----------------------------- | ----------------------------------------- |
+| **Name**                      | Battery                                   |
+| **Connection**                | Inverter                                  |
+| **Capacity**                  | `Sigen Plant Rated Energy Capacity`       |
+| **Current Charge Percentage** | `Sigen Plant Battery State of Charge`     |
+| **Min Charge Percentage**     | 10                                        |
+| **Max Charge Percentage**     | 100                                       |
+| **Efficiency**                | 99                                        |
+| **Max Charge Power**          | `Sigen Plant Ess Rated Charging Power`    |
+| **Max Discharge Power**       | `Sigen Plant Ess Rated Discharging Power` |
+| **Early Charge Incentive**    | 0.001                                     |
+
+You will need to enable these disabled Sigenergy sensors first:
+- `sensor.sigen_plant_rated_energy_capacity`
+- `sensor.sigen_plant_ess_rated_charging_power`
+- `sensor.sigen_plant_ess_rated_discharging_power`
+
+### Verification
+
+After completing configuration:
+
+1. Navigate to **Settings** → **Devices & Services** → **HAEO**
+2. Click on your hub to view the device page
+3. Verify you see approximately 8 devices and 40+ entities
+4. Wait for the first optimization (5-30 seconds)
+5. Check `sensor.sigenergy_system_optimization_status` — should show `success`
+
+That's it! HAEO will now automatically optimize whenever your input sensors update. There's no need to create scripts 
+or automations to trigger optimization — it happens automatically.
+

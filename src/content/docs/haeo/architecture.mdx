@@ -1,0 +1,51 @@
+---
+title: Architecture
+description: Understanding how HAEO works with the four required forecasts to optimize your battery system.
+---
+
+HAEO is quite simple at its core. You configure 4 types of forecast inputs, and it 
+produces an optimal strategy for your solar/battery system, including when to charge and discharge your battery.
+
+Those 4 forecasts are:
+
+1. A forecast of how much you can sell electricity for (i.e. feed-in price).
+2. A forecast of how much you can buy electricity for.
+3. A forecast of how much solar you will generate.
+4. A forecast of how much electricity you will use.
+
+<p align="center">
+  <img src="/img/emhass_diagram.png" alt="HAEO Architecture Diagram" width="800" />
+</p>
+
+HAEO takes all this information and generates an energy plan that is optimal for minimizing your energy costs. The 
+optimization considers:
+
+- When to charge the battery from the grid (buy low)
+- When to discharge the battery to the grid (sell high)
+- When to use solar directly vs store it
+- When to self-consume vs export
+
+As a native Home Assistant integration, HAEO automatically creates sensor entities with the optimization results. 
+These sensors update automatically whenever your input forecasts change. You can then use automations to control your 
+battery based on these sensors.
+
+You can visualize this energy plan in a dashboard and see what HAEO has decided to do:
+
+<p align="center">
+  <img src="/img/3_day_plan.png" alt="HAEO Plan Example" width="800" />
+</p>
+
+Here is a 3-day plan which minimizes cost. It will charge the battery during low-price periods (often overnight or 
+during peak solar), and discharge during high-price periods (morning and evening peaks), keeping just enough battery 
+capacity to last the night before starting over the next day.
+
+### How It Works
+
+1. **Input sensors** — HAEO reads forecast data from your configured sensors (Amber prices, Solcast solar, HAFO load)
+2. **Optimization** — When inputs change, HAEO runs a linear programming optimization to find the lowest-cost plan
+3. **Output sensors** — Results are published as Home Assistant sensors with current values and `forecast` attributes
+4. **Automations** — Your automations read these sensors and control the battery accordingly
+
+The entire process is automatic and event-driven. There's no need to schedule optimization runs — HAEO re-optimizes 
+whenever relevant input data changes.
+
