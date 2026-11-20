@@ -37,3 +37,31 @@ Then restart home assistant.
 These are the 3 emhass actions we will now be able to execute from home assistant. In this guide we will only use the
 last two. They all take a payload as a parameter, which will later include all the required information such as the
 forecasts and solar/battery specs.
+
+### API authentication (EMHASS 0.18.10+)
+
+Newer EMHASS versions require a bearer token for REST API requests. EMHASS automatically generates a token when
+`emhass_api_token` is left blank in the add-on configuration. Open the **EMHASS Web UI** and select **API token** to
+copy the generated token.
+
+Alternatively, to create your own secure token, run this command in the Home Assistant Terminal:
+
+```bash
+openssl rand -hex 32
+```
+
+Paste its output into `emhass_api_token` under **Settings → Add-ons → EMHASS → Configuration** and restart the EMHASS
+add-on.
+
+In Home Assistant's `/config/secrets.yaml`, add the following, using either your automatically generated token or your
+manually created token:
+
+```yaml
+emhass_bearer: "Bearer YOUR_EMHASS_API_TOKEN"
+```
+
+The REST commands above use `Authorization: !secret emhass_bearer`. Include `Bearer` followed by one space and the token
+in the secret value. The EMHASS API token is different from your Home Assistant long-lived access token.
+
+After saving `secrets.yaml` and the REST commands, restart Home Assistant. Run your EMHASS optimisation script to test
+it. An HTTP `401 Unauthorized` error generally indicates a missing or incorrect bearer token.
