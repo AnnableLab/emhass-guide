@@ -4,16 +4,22 @@ rest_command:
     method: POST
     content_type: "application/json"
     timeout: 240
+    headers:
+      Authorization: !secret emhass_bearer
     payload: "{{ payload }}"
   emhass_naive_mpc_optim:
     url: http://127.0.0.1:5000/action/naive-mpc-optim
     method: POST
     content_type: "application/json"
     timeout: 240
+    headers:
+      Authorization: !secret emhass_bearer
     payload: "{{ payload }}"
   emhass_publish_data:
     url: http://127.0.0.1:5000/action/publish-data
     method: POST
     content_type: "application/json"
     timeout: 240
+    headers:
+      Authorization: !secret emhass_bearer
     payload: "{{ payload }}"
